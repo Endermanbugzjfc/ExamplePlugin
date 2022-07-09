@@ -1,12 +1,12 @@
 name: CI
 
 on:
-  push:
+ # push:
   pull_request:
   workflow_dispatch:
 
 jobs:
-  build:
+  phpstan:
     name: PHPStan analysis
     runs-on: ubuntu-latest
     strategy:
@@ -33,9 +33,22 @@ jobs:
           restore-keys: "php-${{ matrix.php }}-composer-"
 
       - name: Install PHPStan Composer dependencies
-        working-directory: ./phpstan
         run: composer install --prefer-dist --no-interaction
 
       - name: Run PHPStan
-        working-directory: ./phpstan
         run: vendor/bin/phpstan analyze
+  suites:
+    name: suite tests
+    needs: [phpstan]
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        suite-name:
+          - normal
+        pocketmine-version:
+          - "4" # latest ??
+          - "4.0.0"
+    steps:
+      - uses: actions/checkout@v2
+      - run: make suitetest/cases/${{matrix.suite-name}} DIFF="diff -y" POCKETMINE_VERSION=${{matrix.pocketmine-version}}
+        timeout-minutes: 1
