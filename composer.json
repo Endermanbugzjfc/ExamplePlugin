@@ -1,14 +1,26 @@
 {
-   "name": "pocketmine/phpstan-plugin-config",
+   "name": "keopiwauyu/exampleplugin",
    "require": {
-      "phpstan/phpstan": "1.4.6",
       "pocketmine/pocketmine-mp": "4.0.0",
+      "cortexpe/commando": "dev-master",
+      "sylvrs/libmarshal": "^1.4",
+      "sof3/await-generator": "^3.4",
+      "sof3/await-std": "dev-master"
+   },
+   "require-dev": {
+      "phpunit/phpunit": "^9.5",
+      "phpstan/phpstan": "1.4.6",
       "phpstan/phpstan-strict-rules": "^1.0",
       "phpstan/extension-installer": "^1.0"
    },
    "autoload": {
+      "psr-0": {
+         "keopiwauyu\\ExamplePlugin\\": "src/keopiwauyu/ExamplePlugin/"
+      }
+   },
+   "autoload-dev": {
       "psr-4": {
-         "ExamplePlugin\\": "../src"
+         "keopiwauyu\\HyundaiCommando\\": "tests"
       }
    },
    "config": {
