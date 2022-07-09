@@ -16,7 +16,7 @@
    },
    "autoload": {
       "psr-0": {
-         "keopiwauyu\\ExamplePlugin\\": "src/keopiwauyu/ExamplePlugin/"
+         "keopiwauyu\\ExamplePlugin\\": "src"
       }
    },
    "autoload-dev": {
