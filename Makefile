@@ -7,6 +7,8 @@
 PHP = $(shell which php) -dphar.readonly=0
 COMPOSER = dev/composer.phar
 
+SRC_NAMESPACE_PREFIX = keopiwauyu/ExamplePlugin
+
 REUSE_MYSQL = false
 
 SUITE_TESTS = $(shell echo suitetest/cases/*)
@@ -39,9 +41,23 @@ phpstan-baseline.neon/regenerate: vendor
 fmt: $(shell find src -type f) .php-cs-fixer.php vendor
 	$(PHP) vendor/bin/php-cs-fixer fix $$EXTRA_FLAGS
 
-dev/ExamplePlugin.phar: $(EXAMPLE_PLUGIN_SOURCE_FILES) dev/ConsoleScript.php $(EXAMPLE_PLUGIN_VIRIONS)
-# 	$(PHP) dev/ConsoleScript.php --make plugin.yml,src,resources --out $@
-	$(PHP) dev/ConsoleScript.php --make plugin.yml,src --out $@
+dev/plugin.yml: plugin.yml
+	cp -f plugin.yml dev/plugin.yml
+
+dev/src: src Makefile
+	$(eval PARENT := dev/src/$(shell dirname $(SRC_NAMESPACE_PREFIX)))
+	rm -rf "dev/src"
+	mkdir -p $(PARENT)
+	cp -r src $(PARENT)
+	mv $(PARENT)/src dev/src/$(SRC_NAMESPACE_PREFIX)
+
+dev/resources: resources
+	cp -rf resources dev/resources
+
+# dev/ExamplePlugin.phar: $(EXAMPLE_PLUGIN_SOURCE_FILES) dev/ConsoleScript.php $(EXAMPLE_PLUGIN_VIRIONS) dev/plugin.yml dev/src dev/resources
+dev/ExamplePlugin.phar: $(EXAMPLE_PLUGIN_SOURCE_FILES) dev/ConsoleScript.php $(EXAMPLE_PLUGIN_VIRIONS) dev/plugin.yml dev/src
+# 	$(PHP) dev/ConsoleScript.php --make plugin.yml,src,resources --relative "dev" --out $@
+	$(PHP) dev/ConsoleScript.php --make plugin.yml,src --relative "dev" --out $@
 
 	for file in $(EXAMPLE_PLUGIN_VIRIONS); do $(PHP) $$file $@ keopiwauyu\\ExamplePlugin\\Virions\\$$(tr -dc A-Za-z </dev/urandom | head -c 8)\\ ; done
 
