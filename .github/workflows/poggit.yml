@@ -105,8 +105,17 @@ jobs:
       run: echo "::error::Please create gh-pages branch"
       if: failure()
     - name: Run phpdoc
+      strategy:
+        # fail-fast: false
+        matrix:
+          php:
+          - checkstyle
+          - clean
+          - default
+          - responsive-twig
+          - xml
       run: |
-        docker run --rm -v $(pwd):/data phpdoc/phpdoc:3 -d ./src -t ./docs
+        docker run --rm -v $(pwd):/data phpdoc/phpdoc:3 -d ./src -t "./docs/${{ matrix.template}}" --template "${{ matrix.template }}"
     - name: git commit
       run: |
         git config user.name "GitHub Actions"
