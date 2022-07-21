@@ -118,7 +118,6 @@ jobs:
     - uses: actions/checkout@v3
       with:
         ref: gh-pages
-          - uses: actions/checkout@v3
     - name: Setup PHP
       uses: pmmp/setup-php-action@247e08acd52c1465f8f144c162c88f079d8c1174
       with:
