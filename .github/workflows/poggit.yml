@@ -97,20 +97,40 @@ jobs:
     name: Generate docs/ and push to gh-pages branch
     runs-on: ubuntu-latest
     if: "!contains(github.event_name, 'pull_request') || (github.event.pull_request.merged && github.event.pull_request.user.login != 'github-actions[bot]')"
+    strategy:
+      fail-fast: false
+      matrix:
+        template:
+          - checkstyle
+          - clean
+          - default
+          - responsive-twig
+          - xml
     steps:
     - uses: actions/checkout@v3
       with:
         ref: gh-pages
+    - name: Define link param under pull request event context
+      if: contains(github.event_name, 'pull_request')
+      id: link
+      run: |
+        echo "Event name: ${{ github.event_name }}"
+        echo "::set-output name=link::#${{ github.event.pull-request-number }}"
     - name: If gh-pages branch not exists
       run: echo "::error::Please create gh-pages branch"
       if: failure()
-    - name: Run phpdoc
-      run: |
-        docker run --rm -v $(pwd):/data phpdoc/phpdoc:3 -d ./src -t ./docs
-    - name: git commit
+    - name: Set Git configs
       run: |
         git config user.name "GitHub Actions"
         git config user.email ""
+    - name: Sync with HEAD
+      run: |
+        git merge ${{ github.base_ref || github.ref }} -m "Sync with ${{ steps.link.output.link || github.ref }}"
+    - name: Run phpdoc
+      run: |
+        docker run --rm -v $(pwd):/data phpdoc/phpdoc:3 -d ./src -t ./docs --template "${{ matrix.template }}"
+    - name: git commit
+      run: |
         git add .
-        git commit -m "Update phpdoc" || echo "No changes to commit"
+        git commit -m "${{ steps.link.output.link || github.ref }} with template ${{ matrix.template }}" || echo "No changes to commit"
         git push
