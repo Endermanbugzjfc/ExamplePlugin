@@ -145,13 +145,13 @@ jobs:
         echo "::set-output name=link::#${{ github.event.pull-request-number }}"
     - name: Run phpdoc
       run: |
-        docker run --rm -v $(pwd):/data phpdoc/phpdoc:3 -d ./src -t ./docs
+        docker run --rm -v $(pwd):/data phpdoc/phpdoc:3 -t ./docs
     - name: Set Git configs
       run: |
         git config user.name "github-actions[bot]"
         git config user.email ""
     - name: git commit
       run: |
-        git add .
+        git add docs/
         git commit -m "Docs for ${{ steps.link.output.link || github.ref }}" || echo "No changes to commit"
         git push
