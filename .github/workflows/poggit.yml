@@ -135,7 +135,7 @@ jobs:
         echo "::set-output name=link::#${{ github.event.pull-request-number }}"
     - name: Run phpdoc
       run: |
-        docker run --rm -v $(pwd):/data phpdoc/phpdoc:3 -d ./src -t ./docs --template "${{ matrix.template }}"
+        docker run --rm -v $(pwd):/data phpdoc/phpdoc:3 -d ./src -t ./docs --template "data/templates/${{ matrix.template }}"
     - name: Set Git configs
       run: |
         git config user.name "GitHub Actions"
