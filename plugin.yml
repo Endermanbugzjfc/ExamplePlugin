@@ -2,6 +2,7 @@
 name: ExamplePlugin
 main: keopiwauyu\ExamplePlugin\MainClass
 src-namespace-prefix: keopiwauyu\ExamplePlugin
+#antigen: keopiwauyu\ExamplePlugin
 version: 0.0.1
 api: 4.0.0
 
