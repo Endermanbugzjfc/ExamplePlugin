@@ -85,6 +85,7 @@ jobs:
           branch: php-cs-fixer/${{ github.sha }}
           delete-branch: true
           assignees: ${{ github.actor }}
+          committer: "github-actions[bot]"
           body: |
             Please apply these changes on the ${{ github.base_ref || github.ref }} branch to fix coding standard violations.
       - uses: thollander/actions-comment-pull-request@v1
