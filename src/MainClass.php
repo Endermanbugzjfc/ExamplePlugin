@@ -10,8 +10,10 @@ use pocketmine\plugin\PluginBase;
 use pocketmine\utils\TextFormat;
 
 class MainClass extends PluginBase{
+private static self $instance; public static function getInstance() : self { return self::$instance; }
 
 	public function onLoad() : void{
+self::$instance = $this;
 		$this->getLogger()->info(TextFormat::WHITE . "I've been loaded!");
 	}
 
